@@ -1,0 +1,51 @@
+{
+ "site": {
+  "title": "مؤلفات الدكتور عبدالرحمن بن صالح الدهش",
+  "author": "عضو هيئة التدريس بجامعة القصيم",
+  "subtitle": "كتبه وأماليه في الحديث الشريف وعلومه، تقرؤها كما طُبعت ومن أي جهاز.",
+  "brandTitle": "مؤلفات الدكتور",
+  "brandSub": "عبدالرحمن بن صالح الدهش",
+  "libraryName": "مؤلفات الدكتور عبدالرحمن بن صالح الدهش",
+  "authorName": "الدكتور عبدالرحمن بن صالح الدهش",
+  "allowDownload": false,
+  "allowPageShare": true,
+  "counter": "",
+  "whatsapp": "966598303121",
+  "preparedDate": "2026-11-15",
+  "newDays": 45,
+  "theme": {
+   "primary": "#174C50",
+   "accent": "#A4A078",
+   "bg": "#EAE2D2",
+   "ink": "#174C50",
+   "highlight": "#D4DCD5"
+  },
+  "categories": [
+   "شروح الحديث",
+   "علوم الحديث"
+  ]
+ },
+ "books": [
+  {
+   "id": "b01",
+   "title": "الإرشادات في تقوية الأحاديث بالشواهد والمتابعات",
+   "file": "books/book-01.pdf",
+   "cover": "covers/book-01.jpg",
+   "pages": 494,
+   "date": "2026-11-15",
+   "added": "2026-11-15",
+   "category": "علوم الحديث",
+   "author": "أبو معاذ طارق بن عوض الله بن محمد"
+  },
+  {
+   "id": "b02",
+   "title": "الأمالي على مختصر صحيح البخاري",
+   "file": "books/book-02.pdf",
+   "cover": "covers/book-02.jpg",
+   "pages": 1317,
+   "date": "2026-11-15",
+   "added": "2026-11-15",
+   "category": "شروح الحديث"
+  }
+ ]
+}
