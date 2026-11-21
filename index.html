@@ -29,7 +29,7 @@
 <!-- THEME:START (يُولَّد تلقائياً: python3 tools/configure.py) --><style id="lib-theme">:root:root{--t-primary:#174c50;--t-primary-rgb:23 76 80;--t-primary-l:#25575b;--t-primary-2:#11393c;--t-primary-2-rgb:17 57 60;--t-primary-d:#0f3133;--t-primary-d-rgb:15 49 51;--t-primary-dd:#0b2426;--t-primary-dd-rgb:11 36 38;--t-stage:#091e20;--t-stage-rgb:9 30 32;--t-sheet:#0c2628;--t-zoom:#07181a;--t-annbar-rgb:12 38 40;--t-accent:#a4a078;--t-accent-rgb:164 160 120;--t-accent-2-rgb:164 160 120;--t-accent-m:#8b8866;--t-accent-text:#6a674d;--t-bg:#f0eade;--t-bg-rgb:240 234 222;--t-bg-2:#e2ddcc;--t-card:#faf9f5;--t-soft:#e6e0d1;--t-line:#d7d4c3;--t-line-2:#d6d4c3;--t-ink:#144346;--t-ink-rgb:20 67 70;--t-muted:#567574;--t-muted-2:#5d7a79;--t-on-dark-2:#e2ddcc;--t-on-dark-3:#e8e3d4;--t-placeholder:#778e8b;--t-chip:#e7e3d8;--t-chip-h:#e1dbca;--t-tint:#e2ddcc;--t-tint-2:#ece6d9;--t-pg:#f7f3ed;--t-pg-2:#e8e3d4;--t-pg-ink:#a5a88f;--t-fan:#0d2a2c;--t-line-h:#c1bfa9;--t-line-h2:#c3c1ac;--t-frame:#e4dfd1;--t-frame-2:#dbd7c6;--t-frame-h:#d9d5c4;--t-frame-h2:#d0cdb9;--t-dot:#9ca492;--t-highlight:#d4dcd5;--t-pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='84' viewBox='0 0 84 84'%3E%3Cg fill='none' stroke='%23a4a078' stroke-width='.7' stroke-opacity='.22'%3E%3Cpath d='M42 18l7 17 17 7-17 7-7 17-7-17-17-7 17-7z'/%3E%3Crect x='27' y='27' width='30' height='30' transform='rotate(45 42 42)'/%3E%3Ccircle cx='42' cy='42' r='5'/%3E%3Cpath d='M0 0l12 12M84 0L72 12M0 84l12-12M84 84L72 72'/%3E%3C/g%3E%3C/svg%3E")}</style><!-- THEME:END -->
 <script>try{var _t=localStorage.getItem("lib-theme:"+location.pathname.replace(/[^/]*$/,""));if(_t){var _s=document.getElementById("lib-theme")||document.createElement("style");_s.id="lib-theme";_s.textContent=_t;if(!_s.parentNode)document.head.appendChild(_s)}}catch(e){}</script>
 <link rel="stylesheet" href="assets/style.css?v=53">
-<link rel="stylesheet" href="assets/home.css?v=52">
+<link rel="stylesheet" href="assets/home.css?v=53">
 <!-- PWA:START (يُولَّد تلقائياً: python3 tools/pwa.py) -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -537,7 +537,7 @@
         const go = el("span", "grp-go"); go.innerHTML = "<span>تصفّح</span>" + arrow; ft.appendChild(go);
         b.append(el("span", "grp-pat"), ic, body, ft);
         b.setAttribute("aria-label", g.name + " — " + (bk.length ? bk.length + " " + plural(bk.length, "book") : "لا توجد كتب مضافة حالياً") + "، " + g.cats.length + " " + plural(g.cats.length, "cat"));
-        b.onclick = () => isDirect(g) ? nav(g.name, g.name, "lib") : nav(g.name, "", "colls");
+        b.onclick = () => nav(g.name, isDirect(g) ? g.name : "*", "lib"); // المجموعة تفتح على كتبها مباشرة وشريط تصنيفاتها فوقها (بلا مربعات مكررة)
         list.appendChild(b);
       });
       const ex = el("div", "grp-extra");
@@ -577,7 +577,7 @@
     // شريط التصفية فوق الرف: صف للمجموعات، وصف لتصنيفات المجموعة المختارة
     const navEl = $("cats"), subNav = el("nav", "cats subcats"); subNav.setAttribute("aria-label", "تصنيفات المجموعة"); subNav.hidden = true;
     navEl.hidden = false; $("libBar").classList.add("g-mode"); $("libBar").appendChild(subNav);
-    const chip = (host, label, val, n, fn) => { const c = el("button", "chip", label); c.type = "button"; c.dataset.val = val; c.appendChild(el("small", "", ar(n))); c.onclick = fn; host.appendChild(c); return c; };
+    const chip = (host, label, val, n, fn) => { const c = el("button", "chip", label); c.type = "button"; c.dataset.val = val; c.appendChild(el("small", "", ar(n))); if (!n) c.classList.add("chip-empty"); c.onclick = fn; host.appendChild(c); return c; };
     chip(navEl, "الكل", "", books.length, () => nav("", "", "keep"));
     GROUPS.forEach((g) => chip(navEl, g.name, isDirect(g) ? g.name : "g:" + g.name, inGrp(g).length, () => nav(g.name, isDirect(g) ? g.name : "*", "keep")));
     gPaint = () => {
@@ -588,7 +588,7 @@
       [navEl, subNav].forEach((n_) => { const on_ = n_.querySelector(".chip.on"); if (on_ && !n_.hidden) n_.scrollTo({ left: on_.offsetLeft - (n_.clientWidth - on_.offsetWidth) / 2 }); });
     };
     // التذييل: المجموعات
-    GROUPS.forEach((g) => { const li = el("li"); const a = el("a", "", g.name); a.href = "#g/" + encodeURIComponent(g.name); a.onclick = (e) => { e.preventDefault(); nav(g.name, "", "colls"); }; li.appendChild(a); $("fCats").appendChild(li); });
+    GROUPS.forEach((g) => { const li = el("li"); const a = el("a", "", g.name); a.href = "#g/" + encodeURIComponent(g.name); a.onclick = (e) => { e.preventDefault(); nav(g.name, isDirect(g) ? g.name : "*", "lib"); }; li.appendChild(a); $("fCats").appendChild(li); });
 
     // ===== صفحة التصنيف: عنوان ووصف وعدد وبحث داخل التصنيف، ثم شبكة الأغلفة =====
     const lib = $("library"), ch = el("div", "cat-head"); ch.id = "catHead"; ch.hidden = true; lib.querySelector(".wrap").prepend(ch);
@@ -600,16 +600,17 @@
       const cr = el("nav", "cat-crumb"); cr.setAttribute("aria-label", "مسار التصفح");
       const lk = (t, fn) => { const b = el("button", "", t); b.type = "button"; b.onclick = fn; return b; };
       cr.append(lk("المجموعات", () => nav("", "", "colls")), el("span", "gsep", "‹"));
-      if (all || direct) cr.appendChild(el("b", "", g)); else { cr.append(lk(g, () => nav(g, "", "colls")), el("span", "gsep", "‹")); if (secOf(c)) cr.append(el("span", "cat-sec", secOf(c)), el("span", "gsep", "‹")); cr.appendChild(el("b", "", lbT(c))); }
+      if (all || direct) cr.appendChild(el("b", "", g)); else { cr.append(lk(g, () => nav(g, "*", "lib")), el("span", "gsep", "‹")); if (secOf(c)) cr.append(el("span", "cat-sec", secOf(c)), el("span", "gsep", "‹")); cr.appendChild(el("b", "", lbT(c))); }
       const top = el("div", "cat-top"); const ic = el("span", "cat-ic"); ic.innerHTML = all || direct ? icG(G_) : icC(c);
       const tx = el("div", "cat-tx"); if (subLine) tx.appendChild(el("span", "cat-of", subLine)); tx.appendChild(el("h1", "", all ? title : lbT(c))); if (desc) tx.appendChild(el("p", "cat-desc", desc));
       const mt = el("div", "cat-meta"); mt.id = "catMeta"; tx.appendChild(mt); top.append(ic, tx);
       const sb = el("label", "cat-search"); sb.innerHTML = svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
       const inp = el("input"); inp.id = "catQ"; inp.type = "search"; inp.placeholder = "ابحث في " + (all ? "كتب " + g : lbT(c) + (subLine ? " في " + subLine : "")) + "…"; inp.setAttribute("aria-label", inp.placeholder);
       inp.oninput = () => { $("q").value = inp.value; filter(); };
-      sb.appendChild(inp); ch.append(cr, top);
-      if (list_.length) ch.appendChild(sb);
+      sb.appendChild(inp); ch.append(cr, top, sb);
+      sb.classList.toggle("is-off", !list_.length); inp.disabled = !list_.length; // البحث يحفظ مكانه حتى في التصنيف الفارغ
       $("q").value = ""; ch.hidden = false; document.body.classList.add("cat-view");
+      fitCatTitle();
       catHook = (n, raw) => {
         mt.replaceChildren();
         if (!list_.length) { mt.appendChild(el("span", "gm gm-soon", "لا توجد كتب مضافة في " + (direct ? "هذه المجموعة" : "هذا التصنيف") + " حالياً")); return; }
@@ -621,6 +622,13 @@
       let eb = empty.querySelector(".empty-go"); if (!eb) { eb = el("button", "empty-go", "تصفّح المجموعات العلمية"); eb.type = "button"; eb.onclick = () => nav("", "", "colls"); empty.appendChild(eb); }
       eb.hidden = !!list_.length;
     }
+    // عنوان البطاقة في سطر واحد: يصغر الخط قليلاً إذا طال، لتبقى أبعاد البطاقة موحدة
+    function fitCatTitle() {
+      const h = ch.querySelector(".cat-tx h1"); if (!h || ch.hidden) return;
+      h.style.fontSize = ""; let f = parseFloat(getComputedStyle(h).fontSize);
+      while (h.scrollWidth > h.clientWidth + 1 && f > 18) { f -= 1; h.style.fontSize = f + "px"; }
+    }
+    addEventListener("resize", () => { if (document.body.classList.contains("cat-view")) fitCatTitle(); });
     function leaveCat() {
       if (!document.body.classList.contains("cat-view")) return;
       document.body.classList.remove("cat-view"); ch.hidden = true; catHook = null; $("q").value = "";
@@ -646,6 +654,8 @@
     }
     function apply(mode) {
       const s_ = parse(); if (!s_) return; // روابط داخلية أخرى (#library…)
+      // رابط مجموعة بلا تصنيف (روابط قديمة أو زر الرجوع): يُفتح على كل كتب المجموعة بدل مربعات التصنيفات
+      { const G0 = s_.g && !s_.c && GROUPS.find((x) => x.name === s_.g); if (G0) { s_.c = isDirect(G0) ? G0.name : "*"; history.replaceState(null, "", hashOf(s_.g, s_.c)); } }
       const was = viewG;
       if (!s_.g || !GROUPS.some((x) => x.name === s_.g)) { leaveCat(); if (was !== "") { level1(); if (was !== null) anim(); } setCat(""); }
       else {
@@ -655,9 +665,9 @@
         setCat(val);
       }
       if (mode === "keep") return;
-      if (s_.c) { window.scrollTo({ top: 0, behavior: "auto" }); return; }
+      if (s_.c) { window.scrollTo({ top: Math.max(0, topOf($("library"))), behavior: "auto" }); return; } // ننزل لعنوان المجموعة/التصنيف وكتبه مباشرة
       if (mode === "lib") goLib();
-      else if (mode === "colls" && topOf(sec) < scrollY - 4) window.scrollTo({ top: topOf(sec), behavior: smooth() });
+      else if (mode === "colls") { const r_ = sec.getBoundingClientRect().top - $("topbar").offsetHeight; if (r_ < -4 || r_ > innerHeight * 0.35) window.scrollTo({ top: topOf(sec), behavior: "auto" }); } // الرجوع للمجموعات: نعرض قسم المجموعات نفسه
     }
     window.addEventListener("popstate", () => apply("none"));
     // نحفظ مكان القارئ في المكتبة عند فتح كتاب، ونرجعه له عند الضغط على زر المكتبة في القارئ — v44
